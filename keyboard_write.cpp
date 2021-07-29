@@ -1,7 +1,20 @@
 #include <linux/input.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <unordered_map>
+#include <linux/input-event-codes.h> //https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
 
+std::unordered_map<char, int> key_code_map({
+    { 'a', KEY_A },{ 'b', KEY_B },{ 'c', KEY_C },{ 'd', KEY_D },
+    { 'e', KEY_E },{ 'f', KEY_F },{ 'g', KEY_G },{ 'h', KEY_H },
+    { 'i', KEY_I },{ 'j', KEY_J },{ 'k', KEY_K },{ 'l', KEY_L },
+    { 'm', KEY_M },{ 'n', KEY_N },{ 'o', KEY_O },{ 'p', KEY_P },
+    { 'q', KEY_Q },{ 'r', KEY_R },{ 's', KEY_S },{ 't', KEY_T },
+    { 'u', KEY_U },{ 'v', KEY_V },{ 'w', KEY_W },{ 'x', KEY_X },
+    { 'y', KEY_Y },{ 'z', KEY_Z },{ '1', KEY_1 },{ '2', KEY_2 },
+    { '3', KEY_3 },{ '4', KEY_4 },{ '5', KEY_5 },{ '6', KEY_6 },
+    { '7', KEY_7 },{ '8', KEY_8 },{ '9', KEY_9 },{ '0', KEY_0 },
+});
 
 void write_null_event(FILE * fout) {
     struct input_event null_press;
@@ -36,7 +49,8 @@ void write_weird_key(FILE *fout) {
     fwrite(&inp_release, 24, 1, fout);
 }
 
-void write_key(short key_code) {
+void write_key(char letter) {
+    short key_code = key_code_map[letter];
     FILE *fout = fopen("/dev/input/by-id/usb-DELL_Dell_USB_Wired_Entry_Keyboard-event-kbd", "w");
     write_weird_key(fout);
     write_press_key(fout, key_code);
@@ -49,7 +63,10 @@ void write_key(short key_code) {
 }
 
 int main() {
-    for(int i = 0; i < 10; ++i) {
-        write_key(30);
-    }
+    write_key('s');
+    write_key('t');
+    write_key('e');
+    write_key('v');
+    write_key('e');
+    write_key('n');
 }
